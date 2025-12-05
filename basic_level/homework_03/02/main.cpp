@@ -2,8 +2,6 @@
 #include <limits>
 #include "Counter.hpp"
 
-// g++ main.cpp Counter.cpp -o exec
-
 void ClearThreadInput();
 int  GetInt();
 bool HandleAction(Counter& counter, char action);

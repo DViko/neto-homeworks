@@ -3,8 +3,6 @@
 #include <functional>
 #include "Calculator.hpp"
 
-// g++ main.cpp Calculator.cpp -o exec
-
 void GetValidNumber(std::function<bool(double)> setter, const char* message);
 void PrintResults(Calculator& calculator);
 bool IsNextCalculation();
