@@ -4,7 +4,7 @@ class Calculator
 {
     private:
 
-        double _num_1, _num_2;
+        double _num_1 {0}, _num_2 {0};
 
         bool _CheckZero(double num);
 
