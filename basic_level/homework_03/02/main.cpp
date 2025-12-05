@@ -4,6 +4,7 @@
 
 // g++ main.cpp Counter.cpp -o exec
 
+void ClearThreadInput();
 int  GetInt();
 bool HandleAction(Counter& counter, char action);
 
@@ -31,6 +32,12 @@ int main()
     return EXIT_SUCCESS;
 }
 
+void ClearThreadInput()
+{
+    std::cin.clear();
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+}
+
 int GetInt()
 {
     int value {};
@@ -39,8 +46,7 @@ int GetInt()
     {
         std::cout << "Invalid input. Enter a number: ";
 
-        std::cin.clear();
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        ClearThreadInput();
     }
 
     return value;
@@ -48,8 +54,6 @@ int GetInt()
 
 bool HandleAction(Counter& counter, char action)
 {
-    action = std::tolower(action);
-
     switch (action)
     {
         case '+':
@@ -72,6 +76,7 @@ bool HandleAction(Counter& counter, char action)
 
         default:
             std::cout << "Invalid action. Try again.\n";
+            ClearThreadInput();
             return true;
     }
 }

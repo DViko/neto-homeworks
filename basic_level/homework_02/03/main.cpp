@@ -28,7 +28,7 @@ int main()
 
 void PrintAdress(const Adress* adresses, unsigned short length)
 {
-    for (unsigned short i {0}; i < length; i ++)
+    for (unsigned short i {}; i < length; i ++)
     {
         std::cout << "City: " << adresses[i].city << "\n"
                   << "Street: " << adresses[i].street << "\n"
