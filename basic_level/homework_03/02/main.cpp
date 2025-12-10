@@ -4,20 +4,24 @@
 
 void ClearThreadInput();
 int  GetInt();
-bool HandleAction(Counter& counter, char action);
+bool HandleAction(Counter* counter, char action);
 
 int main()
 {
-    Counter counter;
-    char init_value {}, action {};
+    Counter* counter {nullptr};
+    char query {}, action {};
 
     std::cout << "Do you want to set an initial counter value? (y/n): ";
-    std::cin >> init_value;
+    std::cin >> query;
 
-    if (init_value == 'y')
+    if (query == 'y')
     {
         std::cout << "Enter initial value: ";
-        counter.SetValue(GetInt());
+        counter = new Counter(GetInt());
+    }
+    else
+    {
+        counter = new Counter();
     }
 
     do
@@ -27,6 +31,7 @@ int main()
 
     } while (HandleAction(counter, action));
 
+    delete counter;
     return EXIT_SUCCESS;
 }
 
@@ -50,22 +55,20 @@ int GetInt()
     return value;
 }
 
-bool HandleAction(Counter& counter, char action)
+bool HandleAction(Counter* counter, char action)
 {
     switch (action)
     {
         case '+':
-            counter.Increment();
-            std::cout << "Counter value: " << counter.GetValue() << std::endl;
+            counter -> Increment();
             return true;
 
         case '-':
-            counter.Decrement();
-            std::cout << "Counter value: " << counter.GetValue() << std::endl;
+            counter -> Decrement();
             return true;
 
         case '=':
-            std::cout << "Current counter value: " << counter.GetValue() << std::endl;
+            std::cout << "Current counter value: " << counter -> GetValue() << '\n';
             return true;
 
         case 'x':

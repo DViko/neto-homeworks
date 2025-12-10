@@ -1,8 +1,13 @@
 #include "Counter.hpp"
 
-void Counter::SetValue(int value)
+Counter::Counter()
 {
-    _value = value;
+    _value = 0;
+}
+
+Counter::Counter(int initial_value)
+{
+    _value = initial_value;
 }
 
 void Counter::Increment()

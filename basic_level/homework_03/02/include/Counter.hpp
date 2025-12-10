@@ -4,11 +4,13 @@ class Counter
 {
     private:
 
-        int _value {0};
+        int _value {};
 
     public:
 
-        void SetValue(int value);
+        Counter();
+        Counter(int initial_value);
+
         void Increment();
         void Decrement();
         int GetValue() const ;
