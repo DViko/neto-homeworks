@@ -8,8 +8,12 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 add_executable(exec
+
+    src/Calculator.cpp
     main.cpp
 )
+
+target_include_directories(exec PRIVATE include)
 
 if(MSVC)
 

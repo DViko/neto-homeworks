@@ -7,8 +7,33 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-add_executable(exec
-    main.cpp
+set(TRIANGULAR_SOURCES
+
+    src/triangulars/ATriangular.cpp
+    src/triangulars/Triangle.cpp
+    src/triangulars/RightTriangle.cpp
+)
+
+set(QUADRILATERAL_SOURCES
+    
+    src/quadrilaterals/AQuadrilateral.cpp
+    src/quadrilaterals/Square.cpp
+    src/quadrilaterals/Rectangle.cpp
+)
+
+set(SOURCES
+
+    ${TRIANGULAR_SOURCES}
+    ${QUADRILATERAL_SOURCES}
+    
+    main.cpp  
+)
+
+add_executable(exec ${SOURCES})
+
+target_include_directories(exec PRIVATE
+
+    ${CMAKE_SOURCE_DIR}/include
 )
 
 if(MSVC)
