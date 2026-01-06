@@ -50,7 +50,7 @@ std::unique_ptr<IShape> CreateShape()
 
 void Print(const IShape& shape)
 {
-    const auto& params = shape.Params();
+    const auto& params { shape.Params() };
 
     std::cout << "Name: " << params.name << "\n";
 
