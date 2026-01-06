@@ -2,7 +2,7 @@
 #include <stdexcept>
 
 
-bool ATriangular::_CheckEdges(IShapeParams params) const
+bool ATriangular::_CheckEdges(const IShapeParams& params) const
 {
     if (params.edges.size() != 3 || params.angles.size() != 3)
     {
