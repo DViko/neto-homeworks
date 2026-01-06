@@ -1,9 +1,12 @@
 #pragma once
 
+#include "IShapeException.hpp"
+#include "IShapeParams.hpp"
+
 class IShape
 {
     public:
 
         virtual ~IShape() = default;
-        virtual void Description() const = 0;
+        virtual const IShapeParams& Params() const = 0;
 };

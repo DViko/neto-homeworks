@@ -1,37 +1,27 @@
 #include "triangulars/ATriangular.hpp"
-#include <iostream>
-#include <format>
+#include <stdexcept>
 
 
-bool ATriangular::_Check(int a, int b, int c, int A, int B, int C) const
+bool ATriangular::_CheckEdges(IShapeParams params) const
 {
-    return
-            (a > 0 && b > 0 && c > 0) &&
-            (A > 0 && B > 0 && C > 0) &&
-            (A < 180 && B < 180 && C < 180) &&
-            (A + B + C == 180) && (a + b > c && a + c > b && b + c > a);
-}
-
-
-ATriangular::ATriangular(const std::string& name, int a, int b, int c, int A, int B, int C)
-{
-    if (!_Check(a, b, c, A, B, C))
+    if (params.edges.size() != 3 || params.angles.size() != 3)
     {
-        throw std::invalid_argument("Incorrect triangular parameters");
+        return false;
     }
 
-    _name = name;
-    _edges = {a, b, c};
-    _angles = {A, B, C};
+    return
+            (params.edges[0] > 0 && params.edges[1] > 0 && params.edges[2] > 0);
 }
 
-void ATriangular::Description() const
+ATriangular::ATriangular(IShapeParams params) : _params(std::move(params))
 {
-    std::cout << std::format
-    (
-        "Name: {}\nEdges: a: {}, b: {}, c: {}\nAngles: A: {}, B: {}, C: {}\n\n",
-         _name,
-         _edges[0], _edges[1], _edges[2],
-         _angles[0], _angles[1], _angles[2]
-    );
+    if (!_CheckEdges(_params))
+    {
+        throw ShapeLogicException("Edges of triangular parameters must be positive and greather than zero");
+    }
+}
+
+const IShapeParams& ATriangular::Params() const
+{
+    return _params;
 }

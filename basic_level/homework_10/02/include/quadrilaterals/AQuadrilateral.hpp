@@ -1,24 +1,20 @@
 #pragma once
 
 #include "base/IShape.hpp"
-#include <array>
-#include <string>
 
 class AQuadrilateral : public IShape
 {
     private:
 
-        std::string _name;
-        std::array<int,4> _edges;
-        std::array<int,4> _angles;
+        IShapeParams _params;
 
-        bool _Check(int a, int b, int c, int d, int A, int B, int C, int D) const;
+        bool _CheckParams(const IShapeParams& params) const;
 
     protected:
 
-        AQuadrilateral(const std::string& name, int a, int b, int c, int d, int A, int B, int C, int D);
+        AQuadrilateral(IShapeParams params);
 
     public:
 
-        void Description() const override final;
+        const IShapeParams& Params() const override final;
 };

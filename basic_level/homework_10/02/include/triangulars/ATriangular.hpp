@@ -1,24 +1,20 @@
 #pragma once
 
 #include "base/IShape.hpp"
-#include <array>
-#include <string>
 
 class ATriangular : public IShape
 {
     private:
 
-        std::string _name;
-        std::array<int,3> _edges;
-        std::array<int,3> _angles;
+        IShapeParams _params;
 
-        bool _Check(int a, int b, int c, int A, int B, int C) const;
+        bool _CheckEdges(IShapeParams params) const;
 
     protected:
 
-        ATriangular(const std::string& name, int a, int b, int c, int A, int B, int C);
+        ATriangular(IShapeParams params);
 
     public:
 
-        void Description() const override final;
+        const IShapeParams& Params() const override final;
 };
