@@ -8,7 +8,7 @@ class ATriangular : public IShape
 
         IShapeParams _params;
 
-        bool _CheckEdges(const IShapeParams& params) const;
+        bool _CheckParams(const IShapeParams& params) const;
 
     protected:
 

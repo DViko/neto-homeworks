@@ -2,7 +2,7 @@
 #include <stdexcept>
 
 
-bool ATriangular::_CheckEdges(const IShapeParams& params) const
+bool ATriangular::_CheckParams(const IShapeParams& params) const
 {
     if (params.edges.size() != 3 || params.angles.size() != 3)
     {
@@ -15,7 +15,7 @@ bool ATriangular::_CheckEdges(const IShapeParams& params) const
 
 ATriangular::ATriangular(IShapeParams params) : _params(std::move(params))
 {
-    if (!_CheckEdges(_params))
+    if (!_CheckParams(_params))
     {
         throw ShapeLogicException("Edges of triangular parameters must be positive and greather than zero");
     }
