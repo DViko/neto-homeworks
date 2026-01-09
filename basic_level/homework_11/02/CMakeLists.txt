@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(Homework_11_01 LANGUAGES CXX)
+project(Homework_11_02 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -33,14 +33,14 @@ else()
 endif()
 
 
-add_library(greeter STATIC src/Greeter.cpp)
+add_library(leaver SHARED src/Leaver.cpp)
 
-target_include_directories(greeter PUBLIC
+target_include_directories(leaver PUBLIC
 
     ${CMAKE_SOURCE_DIR}/include
 )
 
-set_target_properties(greeter PROPERTIES
+set_target_properties(leaver PROPERTIES
 
     LIBRARY_OUTPUT_DIRECTORY  ${APP_DIR}/lib
     ARCHIVE_OUTPUT_DIRECTORY ${APP_DIR}/lib
@@ -50,7 +50,7 @@ set_target_properties(greeter PROPERTIES
     VISIBILITY_INLINES_HIDDEN ON
 )
 
-target_link_libraries(greeter PRIVATE compiler_warnings)
+target_link_libraries(leaver PRIVATE compiler_warnings)
 
 
 add_executable(exec main.cpp)
@@ -62,6 +62,6 @@ set_target_properties(exec PROPERTIES
 
 target_link_libraries(exec PRIVATE
 
-    greeter
+    leaver
     compiler_warnings
 )

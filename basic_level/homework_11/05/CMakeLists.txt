@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(Homework_11_01 LANGUAGES CXX)
+project(Homework_11_05 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -33,14 +33,20 @@ else()
 endif()
 
 
-add_library(greeter STATIC src/Greeter.cpp)
+add_library(shapes SHARED
 
-target_include_directories(greeter PUBLIC
+    src/Quadrilaterals.cpp
+    src/Triangulars.cpp
+    src/Factory.cpp
+    src/Logger.cpp
+)
+
+target_include_directories(shapes PUBLIC
 
     ${CMAKE_SOURCE_DIR}/include
 )
 
-set_target_properties(greeter PROPERTIES
+set_target_properties(shapes PROPERTIES
 
     LIBRARY_OUTPUT_DIRECTORY  ${APP_DIR}/lib
     ARCHIVE_OUTPUT_DIRECTORY ${APP_DIR}/lib
@@ -50,7 +56,7 @@ set_target_properties(greeter PROPERTIES
     VISIBILITY_INLINES_HIDDEN ON
 )
 
-target_link_libraries(greeter PRIVATE compiler_warnings)
+target_link_libraries(shapes PRIVATE compiler_warnings)
 
 
 add_executable(exec main.cpp)
@@ -62,6 +68,6 @@ set_target_properties(exec PROPERTIES
 
 target_link_libraries(exec PRIVATE
 
-    greeter
+    shapes
     compiler_warnings
 )
