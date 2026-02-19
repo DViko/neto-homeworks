@@ -61,14 +61,14 @@ private:
 
     void shrink_and_shift()
     {
-        size_t new_actual = actual_size / 3;
+        size_t new_actual{actual_size / 3};
 
         if (new_actual < 1)
         {
             new_actual = 1;
         }
 
-        size_t new_logical = logical_size - 1;
+        size_t new_logical{logical_size - 1};
 
         int *new_data{new int[new_actual]};
 
