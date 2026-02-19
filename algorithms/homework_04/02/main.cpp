@@ -98,7 +98,7 @@ int main()
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     print_dynamic_array(arr.data, arr.actual_size, arr.logical_size, "Source array: ");
 
-    std::cout << "Enter a number to add an element to the array, or '-' to remove the last element from the array. Enter 'q' to quit: \n";
+    std::cout << "Input a number to add an element to the array, or '-' to remove the last element from the array. Input 'q' to quit: \n";
 
     while (true)
     {

@@ -7,10 +7,10 @@ int main()
 {
     size_t actual_size{}, logical_size{};
 
-    std::cout << "Enter the actual size of the array: ";
+    std::cout << "Input the actual size of the array: ";
     std::cin >> actual_size;
 
-    std::cout << "Enter the logical size of the array: ";
+    std::cout << "Input the logical size of the array: ";
     std::cin >> logical_size;
 
     if (logical_size > actual_size)
@@ -23,7 +23,7 @@ int main()
 
     for (size_t i{}; i < logical_size; ++i)
     {
-        std::cout << "Enter element [" << i << "]: ";
+        std::cout << "Input element [" << i << "]: ";
         std::cin >> arr[i];
     }
 
