@@ -4,8 +4,8 @@
 
 struct Pyramid
 {
-    const int *data;
-    size_t size;
+    const int *data{nullptr};
+    size_t size{};
 
     size_t parent(size_t node_index) const
     {
@@ -114,7 +114,7 @@ void print_pyramid(const Pyramid &pyramid)
 void explore(const Pyramid &pyramid)
 {
     size_t node_index{};
-    std::string command;
+    std::string command{};
 
     while (true)
     {
