@@ -6,10 +6,16 @@
 
 ```cpp
     arr = new_array;
+
+    //Оператор "=" по умолчанию:
+    
+    arr._data     = new_arr._data
+    arr._size     = new_arr._size
+    arr._capacity = new_arr._capacity
 ```
 
 >
->### C++ выполняет поверхностное копирование, копируется только указатель `_data`, оба объекта владеют одной и той же памятью
+>### C++ выполняет member-wise assignment (поверхностное копирование), копируется только указатель `_data`
 >
 
 ### К чему это приводит:
@@ -24,6 +30,13 @@
 
 ```cpp
     arr = new_array;
+
+    _data = new int[twin._capacity];
+
+    for (size_t i {}; i < twin._size; ++i)
+    {
+        _data[i] = twin._data[i];
+    }      
 ```
 
 >
