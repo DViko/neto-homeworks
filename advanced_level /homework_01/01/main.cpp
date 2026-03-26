@@ -1,40 +1,33 @@
 #include <iostream>
 #include <cstdlib>
-#include <utility>
+#include <vector>
+#include <algorithm>
 
-struct point
-{
-private:
-    double m_x{};
-    double m_y{};
-
-public:
-    point(double x, double y) : m_x{x}, m_y{y}
-    {
-    }
-
-    std::pair<double, double> values() const
-    {
-        return {m_x, m_y};
-    }
-};
-
-void print_point(const point &point_object);
+void print_vector(const std::vector<int>& vector, const char* label);
 
 int main()
 {
-    for (int i{}; i < 5; ++i)
-    {
-        point my_point(static_cast<double>(i), static_cast<double>(2 * i));
-        print_point(my_point);
-    }
+    std::vector<int> vector{4, 7, 9, 14, 12};
+
+    print_vector(vector, "Original vector: ");
+
+    std::for_each(vector.begin(), vector.end(),
+    
+        [](int &x) { if (x % 2 != 0) x *= 3; }
+    );
+
+    print_vector(vector, "Transformed vector: ");
 
     return EXIT_SUCCESS;
 }
 
-void print_point(const point &point_object)
+void print_vector(const std::vector<int>& vector, const char* label)
 {
-    auto [x, y]{point_object.values()};
+    std::cout << label;
 
-    std::cout << "x:" << x << ", y: " << y << '\n';
+    for (int x : vector)
+    {
+        std::cout << x << " ";
+    }
+    std::cout << "\n";
 }
