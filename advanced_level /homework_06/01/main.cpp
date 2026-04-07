@@ -1,69 +1,39 @@
 #include <iostream>
 #include <string>
-
-constexpr size_t CHAR_SET_SIZE{ 256 };
-
-struct Pair
-{
-    unsigned char ch{};
-    int count{};
-};
+#include <unordered_map>
+#include <vector>
+#include <algorithm>
 
 int main()
 {
     std::string input{ "Hello world!!" };
 
-    int freq[CHAR_SET_SIZE]{};
-    Pair arr[CHAR_SET_SIZE]{};
-    size_t size{};
-  
-    for (size_t i{}; i < input.size(); ++i)
-    {
-        unsigned char c_elem { static_cast<unsigned char>(input[i]) };
+    std::unordered_map<unsigned char, int> freq{};
 
-        freq[c_elem]++;
+    for (unsigned char c : input)
+    {
+        ++freq[c];
     }
 
-    for (size_t i{}; i < CHAR_SET_SIZE; ++i)
-    {
-        if (freq[i] > 0)
+    std::vector<std::pair<unsigned char, int>> data(freq.begin(), freq.end());
+
+    std::sort(data.begin(), data.end(),
+
+        [](const auto& a, const auto& b)
         {
-            arr[size++] = Pair { static_cast<unsigned char>(i), freq[i] };
+            if (a.second != b.second)
+            {
+                return a.second > b.second;
+            }
+            return a.first < b.first;
         }
-    }
-
-    for (size_t i{}; i < size; ++i)
-    {
-        for (size_t j{}; j + 1 < size - i; ++j)
-        {
-            bool swap{ false };
-
-            if (arr[j].count < arr[j + 1].count)
-            {
-                swap = true;
-            }
-            else if (arr[j].count == arr[j + 1].count && arr[j].ch > arr[j + 1].ch)
-            {
-                swap = true;
-            }
-
-            if (swap)
-            {
-                Pair temp{ arr[j] };
-
-                arr[j] = arr[j + 1];
-                arr[j + 1] = temp;
-            }
-        }
-    }
+    );
 
     std::cout << "[INPUT]: " << input << "\n";
     std::cout << "[OUTPUT]:\n";
 
-    for (size_t i{}; i < size; ++i)
+    for (const auto& [ch, count] : data)
     {
-        std::cout << static_cast<char>(arr[i].ch) << ": " << arr[i].count << '\n';
+        std::cout << static_cast<char>(ch) << ": " << count << '\n';
     }
-
-    return EXIT_SUCCESS;
 }

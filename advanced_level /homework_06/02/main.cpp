@@ -1,78 +1,32 @@
 #include <iostream>
+#include <vector>
+#include <unordered_set>
+#include <algorithm>
 
 int main()
 {
-    int size{}, capacity{ 4 }, uniq_count{};
-    int* input_numbers{ nullptr }, *unique_numbers{ nullptr };
+    int size{};
 
     std::cout << "[IN]: \n";
     std::cin >> size;
 
-    input_numbers = new int[size];
-    unique_numbers = new int[capacity];
+    std::vector<int> input(size);
 
-    for (int i{}; i < size; ++i)
+    for (int& x : input)
     {
-        std::cin >> input_numbers[i];
+        std::cin >> x;
     }
 
-    for (int i{}; i < size; ++i)
-    {
-        int number{ input_numbers[i] };
-        bool isDuplicate{ false };
+    std::unordered_set<int> uniq(input.begin(), input.end());
 
-        for (int j{}; j < uniq_count; ++j)
-        {
-            if (unique_numbers[j] == number)
-            {
-                isDuplicate = true; break;
-            }
-        }
+    std::vector<int> result(uniq.begin(), uniq.end());
 
-        if (!isDuplicate)
-        {
-            if (uniq_count == capacity)
-            {
-                int new_capacity{ capacity * 2 };
-
-                int* new_array{ new int[new_capacity] };
-
-                for (int k{}; k < uniq_count; ++k)
-                {
-                    new_array[k] = unique_numbers[k];
-                }
-
-                delete[] unique_numbers;
-
-                unique_numbers = new_array;
-                capacity = new_capacity;
-            }
-
-            unique_numbers[uniq_count++] = number;
-        }
-    }
-
-    for (int i{}; i < uniq_count; ++i)
-    {
-        for (int j{}; j + 1 < uniq_count - i; ++j)
-        {
-            if (unique_numbers[j] < unique_numbers[j + 1])
-            {
-                int temp{ unique_numbers[j] };
-
-                unique_numbers[j] = unique_numbers[j + 1];
-                unique_numbers[j + 1] = temp;
-            }
-        }
-    }
+    std::sort(result.begin(), result.end(), std::greater<>());
 
     std::cout << "[OUT]:\n";
 
-    for (int i{}; i < uniq_count; ++i)
+    for (int x : result)
     {
-        std::cout << unique_numbers[i] << "\n";
+        std::cout << x << "\n";
     }
-
-    delete[] input_numbers;
-    delete[] unique_numbers;
 }
