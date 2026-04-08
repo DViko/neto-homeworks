@@ -2,12 +2,13 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <ostream>
 
 class BigInteger
 {
     private:
 
-        std::vector<int> digits{};
+        std::vector<int> _digits{};
 
     public:
 
@@ -15,20 +16,35 @@ class BigInteger
 
         BigInteger(const std::string& str)
         {
-            digits.reserve(str.size());
-            {
-                for (auto elem{ str.rbegin() }; elem != str.rend(); ++elem)
-                {
-                    digits.push_back(*elem - '0');
-                }
-            }
+            _digits.reserve(str.size());
+
+            std::transform(
+                
+                str.rbegin(), str.rend(),
+                std::back_inserter(_digits),
+
+                [](char c){ return std::isdigit(c) ? c - '0' : 0; }
+            );
         }
 
-        BigInteger operator+(const BigInteger& other) const
+        BigInteger(BigInteger&& twin) noexcept : _digits(std::move(twin._digits))
+        {
+        }
+
+        BigInteger& operator=(BigInteger&& twin) noexcept
+        {
+            if (this != &twin)
+            {
+                _digits = std::move(twin._digits);
+            }
+            
+            return *this;
+        }
+
+        BigInteger operator+(const BigInteger& twin) const
         {
             BigInteger result{};
-            size_t max_size{ std::max(digits.size(), other.digits.size()) };
-            result.digits.reserve(max_size + 1);
+            const size_t max_size{ std::max(_digits.size(), twin._digits.size()) };
 
             int carry{};
 
@@ -36,17 +52,17 @@ class BigInteger
             {
                 int sum{ carry };
 
-                if (i < digits.size())
+                if (i < _digits.size())
                 {
-                    sum += digits[i];
-                }
-                
-                if (i < other.digits.size())
-                {
-                    sum += other.digits[i];
+                    sum += _digits[i];
                 }
 
-                result.digits.push_back(sum % 10);
+                if (i < twin._digits.size())
+                {
+                    sum += twin._digits[i];
+                }
+
+                result._digits.push_back(sum % 10);
                 carry = sum / 10;
             }
 
@@ -56,20 +72,19 @@ class BigInteger
         BigInteger operator*(int num) const
         {
             BigInteger result{};
-            result.digits.reserve(digits.size() + 10);
 
             int carry{};
 
-            for (size_t i{}; i < digits.size() || carry; ++i)
+            for (size_t i{}; i < _digits.size() || carry; ++i)
             {
                 long long cur{ carry };
 
-                if (i < digits.size())
+                if (i < _digits.size())
                 {
-                    cur += static_cast<long long>(digits[i]) * num;
+                    cur += 1LL * _digits[i] * num;
                 }
 
-                result.digits.push_back(cur % 10);
+                result._digits.push_back(cur % 10);
                 carry = cur / 10;
             }
 
@@ -78,7 +93,7 @@ class BigInteger
 
         friend std::ostream& operator<<(std::ostream& os, const BigInteger& num)
         {
-            for (auto elem = num.digits.rbegin(); elem != num.digits.rend(); ++elem)
+            for (auto elem{ num._digits.rbegin() }; elem != num._digits.rend(); ++elem)
             {
                 os << *elem;
             }
@@ -89,14 +104,18 @@ class BigInteger
 
 int main()
 {
-    auto number1{ BigInteger("114575") };
-    auto number2{ BigInteger("78524") };
+    auto num_1{ BigInteger("114575") };
+    auto num_2{ BigInteger("78524") };
 
-    auto sum{ number1 + number2 };
-    std::cout << sum << '\n';
+    std::cout << "Value of num_1: " << num_1 << '\n';
+    std::cout << "Value of num_2: " << num_2 << '\n';
 
-    auto mul{ number1 * 3 };
-    std::cout << mul << '\n';
+    std::cout << "Sum of num_1 and num_2: " << (num_1 + num_2) << '\n';
+    std::cout << "Multiple of num_1 by 3: " << (num_1 * 3) << '\n';
+
+    num_2 = std::move(num_1);
+
+    std::cout << "Value of num_2 after move assignment num_1 to num_2: " << num_2 << '\n';
 
     return EXIT_SUCCESS;
 }
