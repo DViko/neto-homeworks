@@ -1,6 +1,5 @@
 #pragma once
 
-#include "config/db_config.hpp"
 #include <pqxx/pqxx>
 #include <string>
 
@@ -9,12 +8,16 @@ namespace dbase
     class Connection
     {
         private:
-            pqxx::connection m_connection;
+            std::string m_connection_string;
+            std::unique_ptr<pqxx::connection> m_connection;
 
         public:
-            explicit Connection(const config::DatabaseConfig& config);
+            explicit Connection(const std::string& connection_string);
 
-            void test_connection();
+            void connect();
+            bool is_connected() const;
 
+            pqxx::connection& connection();
+            std::string get_server_version();
     };
 }

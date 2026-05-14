@@ -1,25 +1,54 @@
 #include "dbase/connection.hpp"
-#include "dbase/connection_string_builder.hpp"
 
 #include <stdexcept>
-#include <iostream>
 
 namespace dbase
 {
-    Connection::Connection(const config::DatabaseConfig& config) : m_connection(build_connection_string(config))
+    Connection::Connection(const std::string& connection_string) : m_connection_string(connection_string)
     {
-        if (!m_connection.is_open())
+    }
+
+    void Connection::connect()
+    {
+        if (m_connection)
+        {
+            return;
+        }
+
+        m_connection = std::make_unique<pqxx::connection>(m_connection_string);
+
+        if (!m_connection -> is_open())
         {
             throw std::runtime_error("Failed to open DB connection");
         }
     }
 
-    void Connection::test_connection()
+    bool Connection::is_connected() const
     {
-        pqxx::work tx(m_connection);
+        return m_connection && m_connection -> is_open();
+    }
+
+    pqxx::connection& Connection::connection()
+    {
+        if (!m_connection)
+        {
+            throw std::runtime_error("DB not connected");
+        }
+
+        return *m_connection;
+    }
+
+    std::string Connection::get_server_version()
+    {
+        pqxx::work tx(*m_connection);
 
         auto result = tx.exec("SELECT version();");
 
-        std::cout << result[0][0].c_str() << std::endl;
+        if (result.empty())
+        {
+            throw std::runtime_error("Failed to get server version");
+        }
+
+        return result[0][0].as<std::string>();
     }
 }

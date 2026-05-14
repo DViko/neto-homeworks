@@ -11,7 +11,6 @@ FetchContent_MakeAvailable(libpqxx)
 
 add_library(dbase
     src/connection.cpp
-    src/connection_string_builder.cpp
 )
 
 target_include_directories(dbase PUBLIC
@@ -20,5 +19,4 @@ target_include_directories(dbase PUBLIC
 
 target_link_libraries(dbase PUBLIC
     pqxx
-    config
 )
