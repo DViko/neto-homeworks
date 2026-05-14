@@ -1,6 +1,6 @@
 
 add_library(domain
-    src/user_repository.cpp
+    src/client_repository.cpp
 )
 
 target_include_directories(domain PUBLIC
