@@ -1,5 +1,5 @@
 add_library(cli
-    src/client_cli.cpp
+    src/contact_cli.cpp
 )
 
 target_include_directories(cli PUBLIC

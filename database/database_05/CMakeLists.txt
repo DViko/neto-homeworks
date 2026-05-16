@@ -11,6 +11,7 @@ add_subdirectory(cli)
 
 add_executable(exec
     src/main.cpp
+    src/application.cpp
 )
 
 target_include_directories(exec PRIVATE

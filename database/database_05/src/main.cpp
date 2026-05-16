@@ -1,32 +1,16 @@
-#include "dbase/config.hpp"
-#include "dbase/connection.hpp"
-
-#include "client_repository.hpp"
-#include "client_cli.hpp"
+#include "application.hpp"
 
 #include <iostream>
 
 int main()
 {
-    dbase::DbConfig config;
-
     try
     {
-        dbase::Connection db(config.to_string());
-
-        std::cout << "Server version: " << db.get_server_version() << '\n';
-
-        repositories::ClientRepository repo(db);
-        cli::ClientCLI client_cli(repo);
-
-        client_cli.run();
+        return app::Application{}.run();
     }
     catch (const std::exception& exception)
     {
-        std::cerr << "Exception: " << exception.what() << std::endl;
-
+        std::cerr << "Exception: " << exception.what() << "\n";
         return EXIT_FAILURE;
     }
-
-    return EXIT_SUCCESS;
 }

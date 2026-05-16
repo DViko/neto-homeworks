@@ -14,7 +14,7 @@ namespace dbase
         public:
             explicit Connection(const std::string& connection_string);
             bool is_connected() const;
-
+            
             pqxx::connection& connection();
             std::string get_server_version();
     };
