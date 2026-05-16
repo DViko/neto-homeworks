@@ -50,12 +50,24 @@ namespace repositories
     {
     }
 
-    void ClientRepository::create_tables()
+    template<typename Func>
+    void ClientRepository::execute_transaction(Func&& func, const std::string& error_msg)
     {
         try
         {
             pqxx::work tx(m_db.connection());
+            std::forward<Func>(func)(tx);
+            tx.commit();
+        }
+        catch (const std::exception& e)
+        {
+            throw std::runtime_error(error_msg + ": " + e.what());
+        }
+    }
 
+    void ClientRepository::create_tables()
+    {
+        execute_transaction([](pqxx::work& tx) {
             tx.exec(
                 R"(
                     CREATE TABLE IF NOT EXISTS clients
@@ -78,21 +90,12 @@ namespace repositories
                     )
                 )"
             );
-
-            tx.commit();
-        }
-        catch (const std::exception& e)
-        {
-            throw std::runtime_error("Failed to create tables: " + std::string(e.what()));
-        }
+        }, "Failed to create tables");
     }
 
     void ClientRepository::add_client(const entities::Client& client)
     {
-        try
-        {
-            pqxx::work tx(m_db.connection());
-
+        execute_transaction([&client](pqxx::work& tx) {
             auto result = tx.exec(
                 "INSERT INTO clients (first_name, last_name, email) VALUES ($1, $2, $3) RETURNING id",
                 pqxx::params{client.first_name, client.last_name, client.email}
@@ -107,40 +110,22 @@ namespace repositories
                     pqxx::params{client_id, phone}
                 );
             }
-
-            tx.commit();
-        }
-        catch (const std::exception& e)
-        {
-            throw std::runtime_error("Failed to add client: " + std::string(e.what()));
-        }
+        }, "Failed to add client");
     }
 
     void ClientRepository::add_phone(int client_id, const std::string& phone)
     {
-        try
-        {
-            pqxx::work tx(m_db.connection());
-
+        execute_transaction([client_id, &phone](pqxx::work& tx) {
             tx.exec(
                 "INSERT INTO phones (client_id, phone_number) VALUES ($1, $2)",
                 pqxx::params{client_id, phone}
             );
-
-            tx.commit();
-        }
-        catch (const std::exception& e)
-        {
-            throw std::runtime_error("Failed to add phone: " + std::string(e.what()));
-        }
+        }, "Failed to add phone");
     }
 
     void ClientRepository::update_client(const entities::Client& client)
     {
-        try
-        {
-            pqxx::work tx(m_db.connection());
-
+        execute_transaction([&client](pqxx::work& tx) {
             tx.exec(
                 "UPDATE clients SET first_name = $1, last_name = $2, email = $3 WHERE id = $4",
                 pqxx::params{client.first_name, client.last_name, client.email, client.id}
@@ -158,51 +143,27 @@ namespace repositories
                     pqxx::params{client.id, phone}
                 );
             }
-
-            tx.commit();
-        }
-        catch (const std::exception& e)
-        {
-            throw std::runtime_error("Failed to update client: " + std::string(e.what()));
-        }
+        }, "Failed to update client");
     }
 
     void ClientRepository::remove_phone(int phone_id)
     {
-        try
-        {
-            pqxx::work tx(m_db.connection());
-
+        execute_transaction([phone_id](pqxx::work& tx) {
             tx.exec(
                 "DELETE FROM phones WHERE id = $1",
                 pqxx::params{phone_id}
             );
-
-            tx.commit();
-        }
-        catch (const std::exception& e)
-        {
-            throw std::runtime_error("Failed to remove phone: " + std::string(e.what()));
-        }
+        }, "Failed to remove phone");
     }
 
     void ClientRepository::remove_client(int client_id)
     {
-        try
-        {
-            pqxx::work tx(m_db.connection());
-
+        execute_transaction([client_id](pqxx::work& tx) {
             tx.exec(
                 "DELETE FROM clients WHERE id = $1",
                 pqxx::params{client_id}
             );
-
-            tx.commit();
-        }
-        catch (const std::exception& e)
-        {
-            throw std::runtime_error("Failed to remove client: " + std::string(e.what()));
-        }
+        }, "Failed to remove client");
     }
 
     std::vector<entities::Client> ClientRepository::get_all_clients()

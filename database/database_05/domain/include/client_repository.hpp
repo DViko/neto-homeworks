@@ -8,17 +8,13 @@
 
 namespace repositories
 {
-    struct Phone
-    {
-        int id;
-        int client_id;
-        std::string phone_number;
-    };
-
     class ClientRepository
     {
         private:
             dbase::Connection& m_db;
+
+            template<typename Func>
+            void execute_transaction(Func&& func, const std::string& error_msg);
 
         public:
             explicit ClientRepository(dbase::Connection& db);

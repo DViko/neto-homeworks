@@ -14,7 +14,7 @@ namespace cli
 
     void ClientCLI::run()
     {
-        println("Type 'help' to show command list");
+        println("\nType 'help' to show command list\n");
 
         while (m_running)
         {
@@ -24,7 +24,7 @@ namespace cli
 
             if (it == m_commands.end())
             {
-                println("Unknown command. Type 'help'.");
+                println("\nUnknown command. Type 'help'\n");
                 continue;
             }
 
@@ -49,9 +49,8 @@ namespace cli
         m_commands["6"] = [this](){ handle_remove_client(); };
         m_commands["7"] = [this](){ handle_find_clients(); };
         m_commands["8"] = [this](){ handle_list_clients(); };
-        m_commands["help"] = [this](){ show_menu(); };
-
         m_commands["9"] = [this](){ m_running = false; };
+        m_commands["help"] = [this](){ show_menu(); }; 
     }
 
     void ClientCLI::show_menu()
@@ -77,7 +76,7 @@ namespace cli
     {
         m_repo.create_tables();
 
-        println("Tables created successfully");
+        println("\nTables created successfully\n");
     }
 
     void ClientCLI::handle_add_client()
@@ -91,7 +90,7 @@ namespace cli
 
         m_repo.add_client(client);
 
-        println("Client added successfully");
+        println("\nClient added successfully\n");
     }
 
     void ClientCLI::handle_add_phone()
@@ -101,7 +100,7 @@ namespace cli
 
         m_repo.add_phone(client_id, phone);
 
-        println("Phone added successfully");
+        println("\nPhone added successfully\n");
     }
 
     void ClientCLI::handle_update_client()
@@ -116,7 +115,7 @@ namespace cli
 
         m_repo.update_client(client);
 
-        println("Client updated successfully");
+        println("\nClient updated successfully\n");
     }
 
     void ClientCLI::handle_remove_phone()
@@ -125,7 +124,7 @@ namespace cli
 
         m_repo.remove_phone(phone_id);
 
-        println("Phone removed successfully");
+        println("\nPhone removed successfully\n");
     }
 
     void ClientCLI::handle_remove_client()
@@ -134,7 +133,7 @@ namespace cli
 
         m_repo.remove_client(client_id);
 
-        println("Client removed successfully");
+        println("\nClient removed successfully\n");
     }
 
     void ClientCLI::handle_find_clients()
@@ -152,40 +151,44 @@ namespace cli
         print_clients(clients);
     }
 
+    void ClientCLI::print_client(const entities::Client& client)
+    {
+        println();
+        println("ID: ", client.id);
+        println("Name: ", client.first_name, " ", client.last_name);
+        println("Email: ", client.email);
+        std::cout << "Phones: ";
+
+        if (client.phones.empty())
+        {
+            std::cout << "No phones";
+        }
+        else
+        {
+            for (size_t i = 0; i < client.phones.size(); ++i)
+            {
+                std::cout << client.phones[i];
+                if (i + 1 < client.phones.size())
+                {
+                    std::cout << ", ";
+                }
+            }
+        }
+
+        std::cout << '\n';
+    }
+
     void ClientCLI::print_clients(const std::vector<entities::Client>& clients)
     {
         if (clients.empty())
         {
-            println("No clients found");
+            println("\nNo clients found\n");
             return;
         }
 
         for (const auto& client : clients)
         {
-            println();
-            println("ID: ", client.id);
-            println("Name: ", client.first_name, " ", client.last_name);
-            println("Email: ", client.email);
-            println("Phones: ");
-
-            if (client.phones.empty())
-            {
-                println("  No phones");
-            }
-            else
-            {
-                for (size_t i = 0; i < client.phones.size(); ++i)
-                {
-                    println(client.phones[i]);
-
-                    if (i + 1 < client.phones.size())
-                    {
-                        println(", ");
-                    }
-                }
-            }
-
-            println();
+            print_client(client);
         }
     }
 
@@ -208,16 +211,20 @@ namespace cli
             {
                 return std::stoi(input);
             }
-            catch (...)
+            catch (const std::invalid_argument&)
             {
-                println("Invalid number.");
+                println("\nInvalid number.\n");
+            }
+            catch (const std::out_of_range&)
+            {
+                println("\nNumber out of range.\n");
             }
         }
     }
 
     std::vector<std::string> ClientCLI::get_phones_input()
     {
-        const std::string input = get_input("Phones (comma-separated): ");
+        const std::string input = get_input("Phones (Example: 123-456-7890, 098-765-4321): ");
 
         if (input.empty())
         {
@@ -231,14 +238,8 @@ namespace cli
         while (std::getline(ss, token, ','))
         {
             const auto start = token.find_first_not_of(" \t");
-
-            if (start == std::string::npos)
-            {
-                continue;
-            }
-
+            if (start == std::string::npos) continue;
             const auto end = token.find_last_not_of(" \t");
-
             phones.push_back(token.substr(start, end - start + 1));
         }
 

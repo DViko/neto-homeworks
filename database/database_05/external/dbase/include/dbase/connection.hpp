@@ -13,8 +13,6 @@ namespace dbase
 
         public:
             explicit Connection(const std::string& connection_string);
-
-            void connect();
             bool is_connected() const;
 
             pqxx::connection& connection();

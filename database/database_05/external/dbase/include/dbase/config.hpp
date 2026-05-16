@@ -11,5 +11,11 @@ namespace dbase
         std::string dbname{ "UserDatabase" };
         std::string user{ "postgres" };
         std::string password{ "root" };
+
+        std::string to_string() const
+        {
+            return "host=" + host + " port=" + std::to_string(port) + " dbname=" + dbname +
+                   " user=" + user + " password=" + password;
+        }
     };
 }

@@ -6,15 +6,6 @@ namespace dbase
 {
     Connection::Connection(const std::string& connection_string) : m_connection_string(connection_string)
     {
-    }
-
-    void Connection::connect()
-    {
-        if (m_connection)
-        {
-            return;
-        }
-
         m_connection = std::make_unique<pqxx::connection>(m_connection_string);
 
         if (!m_connection -> is_open())
@@ -42,7 +33,7 @@ namespace dbase
     {
         pqxx::work tx(*m_connection);
 
-        auto result = tx.exec("SELECT version();");
+        auto result{ tx.exec("SELECT version();") };
 
         if (result.empty())
         {

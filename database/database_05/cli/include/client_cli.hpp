@@ -38,6 +38,7 @@ namespace cli
             void handle_find_clients();
             void handle_list_clients();
 
+            void print_client(const entities::Client& client);
             void print_clients(const std::vector<entities::Client>& clients);
 
             std::string get_input(const std::string& prompt);

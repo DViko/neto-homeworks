@@ -6,17 +6,13 @@
 
 #include <iostream>
 
-std::string build_connection_string(const dbase::DbConfig& config);
-
 int main()
 {
     dbase::DbConfig config;
 
     try
     {
-        dbase::Connection db(build_connection_string(config));
-
-        db.connect();
+        dbase::Connection db(config.to_string());
 
         std::cout << "Server version: " << db.get_server_version() << '\n';
 
@@ -33,10 +29,4 @@ int main()
     }
 
     return EXIT_SUCCESS;
-}
-
-std::string build_connection_string(const dbase::DbConfig& config)
-{
-    return  "host=" + config.host + " port=" + std::to_string(config.port) + " dbname=" + config.dbname +
-            " user=" + config.user + " password=" + config.password;
 }
