@@ -18,9 +18,9 @@ namespace cli
         {
             const std::string command = get_input("\nEnter command: ");
             
-            const auto it = std::find_if(
-                m_command_definitions.begin(),
-                m_command_definitions.end(),
+            const auto it = std::find_if
+            (
+                m_command_definitions.begin(), m_command_definitions.end(),
                 [&command](const CommandDefinition& def) {
                     return def.key == command;
                 }
@@ -46,29 +46,27 @@ namespace cli
     void ContactCLI::register_commands()
     {
         m_command_definitions = {
-            {"1", "Create tables", [this](){ handle_create_tables(); }},
-            {"2", "Add contact", [this](){ handle_add_contact(); }},
-            {"3", "Add phone to contact", [this](){ handle_add_phone(); }},
-            {"4", "Update contact", [this](){ handle_update_contact(); }},
-            {"5", "Remove phone", [this](){ handle_remove_phone(); }},
-            {"6", "Remove contact", [this](){ handle_remove_contact(); }},
-            {"7", "Find contacts", [this](){ handle_find_contacts(); }},
-            {"8", "List all contacts", [this](){ handle_list_contacts(); }},
-            {"9", "Exit", [this](){ m_running = false; }},
-            {"help", "Show command list", [this](){ show_menu(); }}
+            {"1", "     Create tables", [this](){ handle_create_tables(); }},
+            {"2", "     Add contact", [this](){ handle_add_contact(); }},
+            {"3", "     Add phone to contact", [this](){ handle_add_phone(); }},
+            {"4", "     Update contact", [this](){ handle_update_contact(); }},
+            {"5", "     Remove phone", [this](){ handle_remove_phone(); }},
+            {"6", "     Remove contact", [this](){ handle_remove_contact(); }},
+            {"7", "     Find contacts", [this](){ handle_find_contacts(); }},
+            {"8", "     List all contacts", [this](){ handle_list_contacts(); }},
+            {"9", "     Exit", [this](){ m_running = false; }},
+            {"help", "  Show command list", [this](){ show_menu(); }}
         };
     }
 
     void ContactCLI::show_menu() const
     {
-        println("\nCommands:  Actions:");
+        println("\nCommands:  Actions:\n");
 
         for (const auto& command : m_command_definitions)
         {
-            println("  ", command.key, "    ", command.description);
+            println('\n', command.key, " ", command.description);
         }
-
-        println();
     }
 
     void ContactCLI::handle_create_tables()
@@ -79,19 +77,21 @@ namespace cli
 
     void ContactCLI::handle_add_contact()
     {
-        entities::Contact contact;
+        entities::Contact contact{};
 
         contact.first_name = get_input("First name: ");
         contact.last_name = get_input("Last name: ");
         contact.email = get_input("Email: ");
 
         const std::string phone = get_input("Phone (optional): ");
+
         if (!phone.empty())
         {
             contact.phones.push_back({0, phone});
         }
 
         m_repo.add_contact(contact);
+        
         println("\nContact added successfully\n");
     }
 

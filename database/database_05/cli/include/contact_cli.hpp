@@ -18,18 +18,18 @@ namespace cli
             void run();
 
         private:
-            bool m_running{true};
+            bool m_running{ true };
             repositories::ContactRepository& m_repo;
             using CommandHandler = std::function<void()>;
 
             struct CommandDefinition
             {
-                std::string_view key;
-                std::string_view description;
-                CommandHandler action;
+                std::string_view key{};
+                std::string_view description{};
+                CommandHandler action{};
             };
 
-            std::vector<CommandDefinition> m_command_definitions;
+            std::vector<CommandDefinition> m_command_definitions{};
 
             void register_commands();
             void show_menu() const;
@@ -59,7 +59,6 @@ namespace cli
             void println(Args&&... args) const
             {
                 print(std::forward<Args>(args)...);
-                std::cout << '\n';
             }
     };
 }
