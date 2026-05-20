@@ -1,19 +1,19 @@
 #pragma once
 
+#include "postgre/config.hpp"
 #include <pqxx/pqxx>
 #include <string>
 
-namespace dbase
+namespace postgre
 {
     class Connection
     {
         private:
-            std::string m_connection_string;
-            std::unique_ptr<pqxx::connection> m_connection;
+            std::string connection_string_;
+            std::unique_ptr<pqxx::connection> connection_;
 
         public:
             explicit Connection(const std::string& connection_string);
-            bool is_connected() const;
             
             pqxx::connection& connection();
             std::string get_server_version();

@@ -1,5 +1,8 @@
+
 add_library(cli
-    src/contact_cli.cpp
+    src/cli/contact_cli.cpp
+    src/cli/dispatcher.cpp
+    src/utils/console_io.cpp
 )
 
 target_include_directories(cli PUBLIC

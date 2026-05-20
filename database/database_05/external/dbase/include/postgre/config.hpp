@@ -2,13 +2,13 @@
 
 #include <string>
 
-namespace dbase
+namespace postgre
 {
-    struct DbConfig
+    struct Config
     {
         std::string host{ "127.0.0.1" };
         int port{ 5432 };
-        std::string dbname{ "UserDatabase" };
+        std::string dbname{ "ContactsDB" };
         std::string user{ "postgres" };
         std::string password{ "root" };
 

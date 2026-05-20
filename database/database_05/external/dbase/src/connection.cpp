@@ -1,32 +1,27 @@
-#include "dbase/connection.hpp"
+#include "postgre/connection.hpp"
 
 #include <stdexcept>
 
-namespace dbase
+namespace postgre
 {
-    Connection::Connection(const std::string& connection_string) : m_connection_string(connection_string)
+    Connection::Connection(const std::string& connection_string) : connection_string_(connection_string)
     {
-        m_connection = std::make_unique<pqxx::connection>(m_connection_string);
+        connection_ = std::make_unique<pqxx::connection>(connection_string_);
 
-        if (!m_connection->is_open())
+        if (!connection_->is_open())
         {
             throw std::runtime_error("Failed to open DB connection");
         }
     }
 
-    bool Connection::is_connected() const
-    {
-        return m_connection && m_connection->is_open();
-    }
-
     pqxx::connection& Connection::connection()
     {
-        if (!m_connection)
+        if (!connection_)
         {
             throw std::runtime_error("DB not connected");
         }
 
-        return *m_connection;
+        return *connection_;
     }
 
     std::string Connection::get_server_version()

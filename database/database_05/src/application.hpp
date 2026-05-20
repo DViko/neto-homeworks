@@ -1,9 +1,11 @@
 #pragma once
 
-#include "dbase/config.hpp"
-#include "dbase/connection.hpp"
-#include "contact_repository.hpp"
-#include "contact_cli.hpp"
+#include "postgre/config.hpp"
+#include "postgre/connection.hpp"
+
+#include "repository/contact_repository.hpp"
+#include "cli/contact_cli.hpp"
+
 
 namespace app
 {
@@ -14,9 +16,9 @@ namespace app
             int run();
 
         private:
-            dbase::DbConfig m_config;
-            dbase::Connection m_connection;
-            repositories::ContactRepository m_repository;
-            cli::ContactCLI m_cli;
+            postgre::Config config_;
+            postgre::Connection connection_;
+            repository::ContactRepository repository_;
+            cli::CLI cli_;
     };
 }

@@ -3,17 +3,17 @@
 #include <string>
 #include <vector>
 
-namespace entities
+namespace entity
 {
     struct Phone
     {
-        int id{};
+        int id;
         std::string number;
     };
 
     struct Contact
     {
-        int id{};
+        int id;
         std::string first_name;
         std::string last_name;
         std::string email;

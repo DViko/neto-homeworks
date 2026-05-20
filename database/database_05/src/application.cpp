@@ -4,17 +4,15 @@
 
 namespace app
 {
-    Application::Application()
-        : m_connection(m_config.to_string())
-        , m_repository(m_connection)
-        , m_cli(m_repository)
+    Application::Application() : connection_(config_.to_string()), repository_(connection_), cli_(repository_)
     {
     }
 
     int Application::run()
     {
-        std::cout << "Server version: " << m_connection.get_server_version() << '\n';
-        m_cli.run();
+        std::cout << "Server version: " << connection_.get_server_version();
+        
+        cli_.run();
         return EXIT_SUCCESS;
     }
 }
