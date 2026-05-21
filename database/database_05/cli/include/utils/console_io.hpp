@@ -1,13 +1,12 @@
 #pragma once
 
-#include "entity/contact_entity.hpp"
-
 #include <iostream>
-#include <iomanip>
+#include <vector>
+#include <string_view>
 
 namespace utils
 {
-    class ConsoleIO
+    class IO
     {       
         public:
 
@@ -17,17 +16,28 @@ namespace utils
             };
 
             template<typename... Args>
-            static void write(Args&&... args)
+            static void write_line(Args&&... args)
             {
                 (std::cout << ... << args);
+                std::cout << '\n';
             }
 
-            template<typename... Args>
-            static void writef(Args&&... args)
+            template<typename Func>
+            static void print_rows(std::string_view title, const std::vector<Row>& rows, Func&& printer)
             {
-                ((std::cout << " " << std::setw(12) << std::left << args), ...);
-                std::cout << "\n";
+                section_begin(title);
+
+                for (const auto& row : rows)
+                {
+                    printer(row);
+                    std::cout << '\n';
+                }
+
+                section_end();
             }
+
+            static void info(std::string_view message);
+            static void exception(std::string_view message);
 
             static void section_begin(std::string_view title);
             static void section_end();
@@ -35,7 +45,8 @@ namespace utils
             static std::string read_line(std::string_view prompt);
             static int read_int(std::string_view prompt);
 
-            static ConsoleIO::Row make_row(std::initializer_list<std::string> columns);
-            static void print_row(const ConsoleIO::Row& row);
+            static std::string field(std::string_view name, std::string_view value);
+            static void print_table(std::string_view title, const std::vector<Row>& rows);
+            static void print_list(std::string_view title, const std::vector<Row>& rows);
     };
 }

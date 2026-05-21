@@ -2,7 +2,6 @@
 
 #include <functional>
 #include <string>
-#include <string_view>
 #include <unordered_map>
 #include <vector>
 
@@ -21,7 +20,6 @@ namespace cli
             };
 
             void register_command(Command command);
-
             bool dispatch(std::string key) const;
 
             const std::vector<Command>& commands() const;

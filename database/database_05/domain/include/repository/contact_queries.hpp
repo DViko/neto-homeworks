@@ -33,6 +33,10 @@ namespace repository::queries
         WHERE id = $4
     )";
 
+    inline constexpr std::string_view delete_contact_phones = R"(
+        DELETE FROM phones WHERE contact_id = $1
+    )";
+
     inline constexpr std::string_view delete_contact = R"(
         DELETE FROM contacts WHERE id = $1
     )";
@@ -40,20 +44,6 @@ namespace repository::queries
     inline constexpr std::string_view insert_phone = R"(
         INSERT INTO phones (contact_id, phone_number)
         VALUES ($1, $2)
-    )";
-
-    inline constexpr std::string_view update_phone = R"(
-        UPDATE phones
-        SET phone_number = $1
-        WHERE id = $2
-    )";
-
-    inline constexpr std::string_view delete_phone = R"(
-        DELETE FROM phones WHERE id = $1
-    )";
-
-    inline constexpr std::string_view delete_phones_by_contact_id = R"(
-        DELETE FROM phones WHERE contact_id = $1
     )";
 
     inline constexpr std::string_view find_contact = R"(
@@ -85,9 +75,18 @@ namespace repository::queries
         ORDER BY p.id
     )";
 
-    inline constexpr std::string_view select_phone_by_id = R"(
-        SELECT id, phone_number
-        FROM phones
-        WHERE id = $1
+    inline constexpr std::string_view select_contact_by_phone_id = R"(
+        SELECT c.id, c.first_name, c.last_name, c.email,
+            p.id AS phone_id, p.phone_number
+        FROM contacts c
+        LEFT JOIN phones p
+        ON c.id = p.contact_id
+        WHERE c.id =
+        (
+            SELECT contact_id
+            FROM phones
+            WHERE id = $1
+        )
+        ORDER BY p.id
     )";
 }

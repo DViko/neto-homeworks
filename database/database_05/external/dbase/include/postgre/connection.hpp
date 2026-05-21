@@ -1,6 +1,6 @@
 #pragma once
 
-#include "postgre/config.hpp"
+#include "config.hpp"
 #include <pqxx/pqxx>
 #include <string>
 

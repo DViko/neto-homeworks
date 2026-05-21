@@ -8,9 +8,9 @@ int main()
     {
         return app::Application{}.run();
     }
-    catch (const std::exception& exception)
+    catch (const std::exception& e)
     {
-        std::cerr << "Exception: " << exception.what() << "\n";
+        std::cerr << "Exception: " << e.what() << "\n";
         return EXIT_FAILURE;
     }
 }

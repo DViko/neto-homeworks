@@ -1,8 +1,10 @@
 #include "cli/contact_cli.hpp"
 
+#include <algorithm>
+
 namespace cli
 {
-    using utils::ConsoleIO;
+    using utils::IO;
 
     CLI::CLI(repository::IContactRepository& repo) : repository_(repo)
     {
@@ -19,39 +21,9 @@ namespace cli
         dispatcher_.register_command({"help", "Show command list", [this]() { show_menu_(); }});
     }
 
-    void CLI::run()
-    {
-        ConsoleIO::write("\n\nType 'help' to show command list\n\n");
-
-        while (is_running_)
-        {
-            try
-            {
-                if (!dispatcher_.dispatch(ConsoleIO::read_line(build_prompt_())))
-                {
-                    ConsoleIO::write("\n\nUnknown command. Type 'help' to show command list\n\n");
-                }
-            }
-            catch (const std::exception& e)
-            {
-                ConsoleIO::write("\n\nError: ", e.what(), "\n\n");
-            }
-        }
-    }
-
-    std::string CLI::build_prompt_() const
-    {
-        if (!in_context_.empty())
-        {
-            return "db-cli[" + in_context_ + "]> ";
-        }
-
-        return "db-cli> ";
-    }
-
     void CLI::update_field_(std::string& field, std::string_view label)
     {
-        const auto value = ConsoleIO::read_line(std::string(label) + " [" + field + "]: ");
+        const auto value = IO::read_line(std::string(label) + " [" + field + "]: ");
 
         if (!value.empty())
         {
@@ -61,22 +33,45 @@ namespace cli
 
     void CLI::show_menu_() const
     {
-        ConsoleIO::section_begin("COMMANDS");
+        std::vector<IO::Row> rows;
+
+        rows.reserve(dispatcher_.commands().size());
 
         for (const auto& command : dispatcher_.commands())
         {
-            ConsoleIO::writef(command.key, command.description);
+            IO::Row row;
+            row.columns.push_back(IO::field(command.key, command.description));
+            rows.push_back(row);
         }
 
-        ConsoleIO::section_end();
+        IO::print_table("COMMANDS", rows);
     }
 
+    void CLI::run()
+    {
+        IO::info("Type 'help' to show command list");
+
+        while (is_running_)
+        {
+            try
+            {
+                if (!dispatcher_.dispatch(IO::read_line("db> ")))
+                {                 
+                    IO::info("Unknown command. Type 'help' to show command list");
+                }
+            }
+            catch (const std::exception& e)
+            {
+                IO::exception(e.what());
+            }
+        }
+    }
 
     void CLI::create_tables_()
     {
         repository_.create_tables();
 
-        ConsoleIO::write("\nTables created\n\n");
+        IO::info("Tables created");
     }
 
     void CLI::insert_contact_()
@@ -84,12 +79,19 @@ namespace cli
         entity::Contact contact
         {
             0,
-            ConsoleIO::read_line("First name: "),
-            ConsoleIO::read_line("Last name: "),
-            ConsoleIO::read_line("Email: ")
+            IO::read_line("\nFirst name: "),
+            IO::read_line("\nLast name: "),
+            IO::read_line("\nEmail: "),
+            {}
         };
 
-        const std::string phone = ConsoleIO::read_line("Phone (optional): ");
+        if(contact.first_name.empty() || contact.last_name.empty() || contact.email.empty())
+        {
+            IO::info("First name, last name and email cannot be empty");
+            return;
+        }
+
+        const std::string phone = IO::read_line("\nPhone (optional): ");
 
         if (!phone.empty())
         {
@@ -98,22 +100,22 @@ namespace cli
 
         repository_.insert_contact(contact);
 
-        ConsoleIO::write("\nContact added\n\n");
+        IO::info("Contact added");
     }
 
     void CLI::update_contact_()
     {
-        const auto existing_contact = repository_.select_contact_by_id(ConsoleIO::read_int("Contact ID: "));
+        const auto existing_contact = repository_.select_contact_by_id(IO::read_int("\nContact ID: "));
 
         if (!existing_contact)
         {
-            ConsoleIO::write("\nContact not found\n\n");
+            IO::info("Contact not found");
             return;
         }
 
         auto contact = *existing_contact;
 
-        ConsoleIO::write("\nLeave fields empty to preserve current values.\n\n");
+        IO::info("Leave fields empty to preserve current values");
 
         update_field_(contact.first_name, "First name");
         update_field_(contact.last_name,  "Last name");
@@ -121,80 +123,115 @@ namespace cli
 
         repository_.update_contact(contact);
 
-        ConsoleIO::write("\nContact updated\n\n");
+        IO::info("Contact updated");
     }
 
     void CLI::remove_contact_()
     {
-        int id = ConsoleIO::read_int("Contact ID: ");
+        int id = IO::read_int("\nContact ID: ");
     
         if (!repository_.select_contact_by_id(id))
         {
-            ConsoleIO::write("\nContact not found\n\n");
+            IO::info("Contact not found");
             return;
         }
         
         repository_.remove_contact(id);
 
-        ConsoleIO::write("\nContact removed\n\n");
+        IO::info("Contact removed");
     }
 
     void CLI::insert_phone_()
     {
-        int contact_id = ConsoleIO::read_int("Contact ID: ");
+        int contact_id = IO::read_int("\nContact ID: ");
 
-        if (!repository_.select_contact_by_id(contact_id))
+        auto contact = repository_.select_contact_by_id(contact_id);
+
+        if (!contact)
         {
-            ConsoleIO::write("\nContact not found\n\n");
+            IO::info("Contact not found");
             return;
         }
         
-        std::string phone = ConsoleIO::read_line("Phone: ");
+        std::string phone = IO::read_line("\nPhone: ");
         
         if (phone.empty())
         {
-            ConsoleIO::write("\nPhone number cannot be empty\n\n");
+            IO::info("Phone number cannot be empty");
             return;
         }
         
-        repository_.insert_phone(contact_id, phone);
-        ConsoleIO::write("\nPhone added\n\n");
+        contact->phones.push_back({0, phone});
+        repository_.update_contact(*contact);
+
+        IO::info("Phone added");                        
     }
 
     void CLI::update_phone_()
     {
-        
-        int phone_id = ConsoleIO::read_int("Phone ID: ");
+        int phone_id = IO::read_int("\nPhone ID: ");
 
-        std::string new_phone = ConsoleIO::read_line("New phone: ");
+        std::string new_phone = IO::read_line("\nNew phone: ");
 
         if (new_phone.empty())
         {
-            ConsoleIO::write("\nPhone number cannot be empty\n\n");
+            IO::info("Phone number cannot be empty");
             return;
         }
 
-        repository_.select_phone_by_id(phone_id);
+        auto contact = repository_.select_contact_by_phone_id(phone_id);
 
-        repository_.update_phone(phone_id, new_phone);
+        if (!contact)
+        {
+            IO::info("Phone not found");
+            return;
+        }
 
-        ConsoleIO::write("\nPhone updated\n\n");
+        auto phone_it = std::find_if(contact->phones.begin(), contact->phones.end(),
+            [phone_id](const entity::Phone& p)
+            {
+                return p.id == phone_id;
+            });
+
+        phone_it->number = new_phone;
+
+        repository_.update_contact(*contact);
+
+        IO::info("Phone updated");
     }
 
     void CLI::remove_phone_()
     {
-        repository_.remove_phone(ConsoleIO::read_int("Phone ID: "));
-        
-        ConsoleIO::write("\nPhone removed\n\n");
+        int phone_id = IO::read_int("\nPhone ID: ");
+
+        auto contact = repository_.select_contact_by_phone_id(phone_id);
+
+        if (!contact)
+        {
+            IO::info("Phone not found");
+            return;
+        }
+
+        auto phone_it = std::find_if(contact->phones.begin(), contact->phones.end(),
+            [phone_id](const entity::Phone& p)
+            {
+                return p.id == phone_id;
+            });
+
+        contact->phones.erase(phone_it);
+
+        repository_.update_contact(*contact);
+
+        IO::info("Phone removed");
     }
 
     void CLI::find_contact_()
     {
-        std::string term = ConsoleIO::read_line("Search: ");
+        std::string term = IO::read_line("\nSearch: ");
     
         if (term.empty())
         {
-            ConsoleIO::write("\nSearch term cannot be empty\n\n");
+            IO::info("Search term cannot be empty");
             return;
         }
         
@@ -211,36 +248,35 @@ namespace cli
     {
         if (contacts.empty())
         {
-            ConsoleIO::write("\nNo contacts found\n\n");
+            IO::info("No contacts found");
             return;
         }
 
-        ConsoleIO::section_begin("CONTACTS");
+        std::vector<IO::Row> rows;
 
-        for(const auto& contact : contacts)
+        for (const auto& contact : contacts)
         {
-            auto row = ConsoleIO::make_row({
-                "ID:         " + std::to_string(contact.id),
-                "Name:       " + contact.first_name + " " + contact.last_name,
-                "Email:      " + contact.email
-            });
+            IO::Row row;
+
+            row.columns.push_back(IO::field("ID", std::to_string(contact.id)));
+            row.columns.push_back(IO::field("Name", contact.first_name + " " + contact.last_name));
+            row.columns.push_back(IO::field("Email", contact.email));
 
             if (contact.phones.empty())
             {
-                row.columns.push_back({"Phone:      No phones"});
+                row.columns.push_back(IO::field("Phones", "none"));
             }
             else
             {
                 for (const auto& phone : contact.phones)
                 {
-                    row.columns.push_back({
-                        "Phone[" + std::to_string(phone.id) + "]:   " + phone.number
-                    });
+                    row.columns.push_back(IO::field("Phone[" + std::to_string(phone.id) + "]", phone.number));
                 }
             }
 
-            ConsoleIO::print_row(row);
-            ConsoleIO::section_end();
+            rows.push_back(std::move(row));
         }
+
+        IO::print_list("CONTACTS", rows);
     }
 }

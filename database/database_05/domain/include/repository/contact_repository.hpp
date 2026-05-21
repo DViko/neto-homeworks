@@ -12,7 +12,6 @@ namespace repository
     class ContactRepository : public IContactRepository
     {
         private:
-
             postgre::Connection& db_;
 
             template<typename Func>
@@ -30,8 +29,7 @@ namespace repository
                 }
             };
 
-        public:
-        
+        public:  
             explicit ContactRepository(postgre::Connection& db);
 
             void create_tables();
@@ -39,15 +37,11 @@ namespace repository
             void insert_contact(const entity::Contact& contact);
             void update_contact(const entity::Contact& contact);
             void remove_contact(int contact_id);
-
-            void insert_phone(int contact_id, const std::string_view phone);        
-            void update_phone(int phone_id, const std::string_view new_phone);
-            void remove_phone(int phone_id);
             
             std::vector<entity::Contact> find_contact(const std::string_view search_term);
 
             std::vector<entity::Contact> select_contact_list();
             std::optional<entity::Contact> select_contact_by_id(int contact_id);
-            std::optional<entity::Contact> select_phone_by_id(int phone_id);
+            std::optional<entity::Contact> select_contact_by_phone_id(int phone_id);
     };
 }

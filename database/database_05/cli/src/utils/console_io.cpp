@@ -1,20 +1,34 @@
 #include "utils/console_io.hpp"
 
+#include <iomanip>
+#include <string>
+
 namespace utils
 {
-    void ConsoleIO::section_begin(std::string_view title)
+    void IO::section_begin(std::string_view title)
     {
-        write("\n---------- ", title, " ----------\n\n");
+        write_line("\n ---------- ", title, " ----------\n");
+
     }
 
-    void ConsoleIO::section_end()
+    void IO::section_end()
     {
-        write("\n-------------------------------\n\n");
+        write_line("\n -------------------------------\n");
     }
 
-    std::string ConsoleIO::read_line(std::string_view prompt)
+    void IO::info(std::string_view message)
     {
-        write(prompt);
+        write_line("\n", message, "\n");
+    }
+
+    void IO::exception(std::string_view message)
+    {
+        write_line("\n\n[ERROR] ", message, "\n");
+    }
+
+    std::string IO::read_line(std::string_view prompt)
+    {
+        std::cout << prompt;
 
         std::string input;
         std::getline(std::cin, input);
@@ -22,11 +36,11 @@ namespace utils
         return input;
     }
 
-    int ConsoleIO::read_int(std::string_view prompt)
+    int IO::read_int(std::string_view prompt)
     {
         while (true)
         {
-            const auto input = ConsoleIO::read_line(prompt);
+            const auto input = IO::read_line(prompt);
 
             try
             {
@@ -34,25 +48,41 @@ namespace utils
             }
             catch (const std::invalid_argument&)
             {
-                write("Invalid number");
+                IO::exception("Invalid number");
             }
-            catch (const std::out_of_range&)
+        }
+    }
+
+    std::string IO::field(std::string_view name, std::string_view value)
+    {
+        std::ostringstream out;
+
+        out << " " << std::left << std::setw(12) << (std::string(name) + ":") << value;
+
+        return out.str();
+    }
+
+    void IO::print_table(std::string_view title, const std::vector<Row>& rows)
+    {
+        print_rows(title, rows,
+            [](const Row& row)
             {
-                write("Number out of range");
-            }
-        }
+                for (const auto& column : row.columns)
+                {
+                    std::cout << column;
+                }
+            });
     }
 
-    ConsoleIO::Row ConsoleIO::make_row(std::initializer_list<std::string> columns)
+    void IO::print_list(std::string_view title, const std::vector<Row>& rows)
     {
-        return Row{std::vector<std::string>(columns)};
-    }
-
-    void ConsoleIO::print_row(const Row& row)
-    {
-        for (const auto& item : row.columns)
-        {
-            write(item, '\n');
-        }
+        print_rows(title, rows,
+            [](const Row& row)
+            {
+                for (const auto& column : row.columns)
+                {
+                    write_line(column);
+                }
+            });
     }
 }

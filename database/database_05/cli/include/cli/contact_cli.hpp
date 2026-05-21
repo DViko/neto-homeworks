@@ -19,7 +19,6 @@ namespace cli
             repository::IContactRepository& repository_;
             cli::CommandDispatcher dispatcher_;
             bool is_running_{ true };
-            std::string in_context_{};
 
             std::string build_prompt_() const;
 

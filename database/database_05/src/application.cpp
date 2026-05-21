@@ -10,7 +10,7 @@ namespace app
 
     int Application::run()
     {
-        std::cout << "Server version: " << connection_.get_server_version();
+        std::cout << "Server version: " << connection_.get_server_version() << '\n';
         
         cli_.run();
         return EXIT_SUCCESS;
