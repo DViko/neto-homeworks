@@ -66,7 +66,7 @@ class Queue
         }
 };
 
-void produce_clients(Queue& queue, int count)
+void produce_clients(Queue& queue, std::size_t count)
 {
     for (std::size_t id = 1; id <= count; ++id)
     {
