@@ -120,7 +120,7 @@ When the container is launched, Docker automatically starts the Bash shell.
 
 🔹 The container starts in :
 
-  - /my_project
+  - /my_app
 
 Because the working directory was defined using `WORKDIR`.
 
@@ -145,10 +145,10 @@ Because the working directory was defined using `WORKDIR`.
 
 ## 📝 Project Structure
 
-🔹 Local project (directory of my-project) :
+🔹 Local project (directory of my_app) :
 
 ```text
-    my_project/
+    my_app/
     ├── Dockerfile
     └── my_app.cpp
 ```

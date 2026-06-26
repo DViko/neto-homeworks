@@ -61,7 +61,7 @@ Docker is a platform for developing, testing, and running applications inside is
 
   - `systemctl status docker`
 
-🔹 (Optional) Allow running Docker without📝 Notes `sudo` :
+🔹 (Optional) Allow running Docker without `sudo` :
 
   - `sudo usermod -aG docker $USER`
 
