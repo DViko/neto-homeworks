@@ -8,7 +8,7 @@ A **Dockerfile** is a text file that contains a sequence of instructions used to
 
 Instead of manually executing commands inside a container, Docker reads the Dockerfile and performs each step during the image build process.
 
-🔹 Build Process :
+🔹 Build Process:
 
 ```text
     Dockerfile
@@ -28,7 +28,7 @@ Instead of manually executing commands inside a container, Docker reads the Dock
 
 A Dockerfile describes **how to build an image**, while a container is a running instance of that image.
 
-🔹 Example Dockerfile :
+🔸 Example Dockerfile:
 
 ```docker
     FROM ubuntu:24.04
@@ -44,21 +44,21 @@ A Dockerfile describes **how to build an image**, while a container is a running
 
 ## 📝 Dockerfile Instructions
 
-🔹 `FROM` :
+🔹 `FROM`:
 
   - Defines the base image
 
-🔸 Example :
+🔸 Example:
 
   - `FROM ubuntu:16.04`
 
 Every Dockerfile starts with a `FROM` instruction.
 
-🔹 `RUN` :
+🔹 `RUN`:
 
   - Executes commands while building the image
 
-🔸 Example :
+🔸 Example:
 
   - `RUN apt update`
   - or `RUN apt install -y g++`
@@ -71,31 +71,31 @@ Every Dockerfile starts with a `FROM` instruction.
   - configure the environment
 
 
-🔹 `WORKDIR`
+🔹 `WORKDIR`:
 
   - Sets the working directory inside the image
 
-🔸 Example :
+🔸 Example:
 
   - `WORKDIR /my_app`
 
 Equivalent to changing the current directory before executing subsequent instructions.
 
-🔹 `COPY` :
+🔹 `COPY`:
 
  - Copies files from the host machine into the image.
 
-🔸 Example :
+🔸 Example:
 
   - `COPY my_app.cpp .`
 
 The destination `.` refers to the current working directory defined by `WORKDIR`.
 
-🔹 `CMD` :
+🔹 `CMD`:
 
   - Specifies the default command executed when the container starts.
 
-🔸 Example :
+🔸 Example:
 
   - `CMD ["bash"]`
 
@@ -108,13 +108,13 @@ When the container is launched, Docker automatically starts the Bash shell.
 
   - `docker build -t my-gcc-project .`
 
-🔹 Options :
+🔹 Options:
 
   - `-t` → assign a name (tag) to the image.
   - `.` → use the current directory as the build context.
 
 
-🔹 Start an interactive container :
+🔹 Start an interactive container:
 
   - `docker run -it my-gcc-project`
 
@@ -126,15 +126,15 @@ Because the working directory was defined using `WORKDIR`.
 
 ## 📝 Working Inside the Container
 
-🔹 List project files :
+🔹 List project files:
 
   - `ls`
 
-🔹 Edit the source code :
+🔹 Edit the source code:
 
   - `nano my_app.cpp`
 
-🔹 Compile the program :
+🔹 Compile the program:
 
   - `g++ my_app.cpp -o exec`
 
@@ -145,7 +145,7 @@ Because the working directory was defined using `WORKDIR`.
 
 ## 📝 Project Structure
 
-🔹 Local project (directory of my_app) :
+🔹 Local project (directory of my_app):
 
 ```text
     my_app/
@@ -153,7 +153,7 @@ Because the working directory was defined using `WORKDIR`.
     └── my_app.cpp
 ```
 
-🔹 During the build process :
+🔹 During the build process:
 
 ```text
     Host Machine
@@ -174,7 +174,7 @@ Because the working directory was defined using `WORKDIR`.
 
 ## 📝 Manual vs Dockerfile
 
-🔹 Manual Setup :
+🔹 Manual Setup:
 
 ```text
     docker run
@@ -195,7 +195,7 @@ Because the working directory was defined using `WORKDIR`.
     copy my_app.cpp
 ```
 
-🔹 Dockerfile :
+🔹 Dockerfile:
 
 ```docker
     FROM ubuntu:16.04
@@ -219,7 +219,7 @@ The Dockerfile automates the entire environment setup.
   - No manual environment configuration.
   - Suitable for CI/CD pipelines.
 
-### 💡 Notes :
+### 💡 Notes:
 
   - A Dockerfile is a recipe for building an image.
   - An image is a template used to create containers.
