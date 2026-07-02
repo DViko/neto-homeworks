@@ -52,7 +52,5 @@ int main()
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }
 
-    std::cout << "\n[main] waiting for destruction...\n";
-
     return 0;
 }
